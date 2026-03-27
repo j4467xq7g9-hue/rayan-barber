@@ -2,472 +2,187 @@
 <html lang="ku" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fêrbûna Îngilîzî - Çîrokên Sînema</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Rayan barber</title> <!-- ناونیشانی لاپەڕە گۆڕدرا -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --bg-dark: #0a0f18; /* Deep cinematic black/blue */
-            --bg-card: #141b29;
-            --text-en: #f8fafc;
-            --text-ku: #94a3b8;
-            --accent: #eab308; /* Cinematic Gold */
-            --play-btn: #3b82f6; /* Blue for audio */
-            --danger: #ef4444; /* Red for delete */
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-en);
-            font-family: 'Cairo', sans-serif;
-            line-height: 1.6;
-            padding-bottom: 50px;
-        }
-
-        /* Cinematic Header */
-        header {
-            background: linear-gradient(to bottom, #000000, transparent);
-            padding: 40px 20px 20px;
-            text-align: center;
-            border-bottom: 1px solid #1e293b;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(15px);
-        }
-
-        h1 {
-            color: var(--accent);
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 15px rgba(234, 179, 8, 0.4);
-            font-weight: 900;
-        }
-        
-        .subtitle {
-            color: var(--text-ku);
-            font-size: 1.1rem;
-            margin-bottom: 25px;
-        }
-
-        /* Navigation Buttons */
-        .nav-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .nav-btn {
-            background-color: var(--bg-card);
-            color: white;
-            border: 1px solid #334155;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 15px;
-            font-weight: 700;
-            font-family: 'Cairo', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .nav-btn:hover {
-            background-color: var(--accent);
-            color: #000;
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        .nav-btn.active {
-            background-color: var(--accent);
-            color: #000;
-            border-color: var(--accent);
-            box-shadow: 0 4px 15px rgba(234, 179, 8, 0.4);
-        }
-
-        /* Main Content */
-        main {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .story-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .story-title-en {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
-            color: #fff;
-            direction: ltr;
-        }
-
-        .story-title-ku {
-            font-size: 1.3rem;
-            color: var(--accent);
-            margin-top: 5px;
-            font-weight: 700;
-        }
-
-        /* Sentence Cards */
-        .sentence-card {
-            background-color: var(--bg-card);
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 20px;
-            border-right: 4px solid transparent;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .sentence-card:hover {
-            border-right-color: var(--accent);
-            transform: translateX(-5px);
-        }
-
-        .text-en {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.6rem;
-            margin-bottom: 12px;
-            color: var(--text-en);
-            cursor: pointer;
-            direction: ltr;
-            text-align: left;
-            transition: color 0.3s;
-        }
-
-        .text-en:hover {
-            color: var(--play-btn);
-        }
-
-        .text-ku {
-            font-size: 1.2rem;
-            color: var(--text-ku);
-            direction: rtl;
-            border-top: 1px dashed #334155;
-            padding-top: 15px;
-            margin-bottom: 20px;
-        }
-
-        /* Card Actions */
-        .actions {
-            display: flex;
-            gap: 12px;
-            direction: rtl;
-        }
-
-        .action-btn {
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: 700;
-            font-family: 'Cairo', sans-serif;
-            border-radius: 8px;
-            border: 1px solid;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-        }
-
-        .btn-play { background: rgba(59, 130, 246, 0.1); border-color: var(--play-btn); color: var(--play-btn); }
-        .btn-play:hover { background: var(--play-btn); color: white; }
-
-        .btn-save { background: rgba(234, 179, 8, 0.1); border-color: var(--accent); color: var(--accent); }
-        .btn-save:hover { background: var(--accent); color: black; }
-
-        /* Reading Animation */
-        .reading {
-            color: var(--accent) !important;
-            text-shadow: 0 0 10px rgba(234, 179, 8, 0.5);
-        }
-
-        /* Saved Section */
-        #saved-section { display: none; }
-        
-        .saved-item {
-            background-color: var(--bg-card);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            border-right: 4px solid var(--play-btn);
-        }
-
-        .btn-delete {
-            background: rgba(239, 68, 68, 0.1); border-color: var(--danger); color: var(--danger);
-            margin-top: 15px;
-        }
-        .btn-delete:hover { background: var(--danger); color: white; }
-
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--accent);
-            color: #000;
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 16px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 1000;
-        }
-        .toast.show { transform: translateX(-50%) translateY(0); }
-
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Noto+Sans+Arabic:wght@400;700&display=swap');
+        :root { --gold: #D4AF37; --card-bg: rgba(10, 10, 10, 0.98); }
+        body { background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url('https://images.unsplash.com/photo-1599351397837-a0b25e799f1f?q=80&w=1887&auto=format&fit=crop'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; font-family: 'Noto Sans Arabic', sans-serif; margin: 0; padding: 0; height: 100vh; overflow: hidden; }
+        header { text-align: center; padding: 15px 0; background: #000; border-bottom: 2px solid var(--gold); }
+        header h1 { font-family: 'Cinzel', serif; font-size: 1.8rem; color: var(--gold); margin: 0; }
+        main { height: calc(100vh - 160px); overflow-y: auto; padding: 15px; -webkit-overflow-scrolling: touch; }
+        .container { max-width: 450px; margin: 0 auto; }
+        .vip-card { background: var(--card-bg); border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.2); padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        label { display: block; color: var(--gold); margin: 10px 0 5px; font-weight: bold; font-size: 0.8rem; }
+        input, select { width: 100%; padding: 12px; background: #000; border: 1px solid #333; border-radius: 10px; color: #fff; box-sizing: border-box; }
+        .btn-gold { width: 100%; padding: 16px; background: linear-gradient(135deg, #D4AF37, #B8860B); border: none; border-radius: 12px; color: #000; font-weight: 900; font-size: 1rem; cursor: pointer; margin-top: 15px; }
+        .btn-gold:disabled { background: #444; color: #888; }
+        .status-box { margin-top: 10px; background: #0a0a0a; border-radius: 15px; padding: 20px; border-right: 5px solid var(--gold); position: relative; border: 1px solid #222; }
+        .del-btn { position: absolute; left: 15px; top: 15px; background: #1a1a1a; color: #ff4d4d; border: 1px solid #ff4d4d; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .fixed-footer { position: fixed; bottom: 0; left: 0; right: 0; background: #080808; border-top: 1px solid #333; z-index: 2000; }
+        .dev-sig { text-align: center; padding: 8px; font-size: 0.75rem; }
+        .dev-sig a { color: var(--gold); text-decoration: none; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .nav-bar { display: flex; justify-content: space-around; padding: 10px 0 25px; }
+        .nav-item { color: #555; text-align: center; font-size: 0.7rem; flex: 1; cursor: pointer; }
+        .nav-item.active { color: var(--gold); }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; margin-bottom: 8px; }
+        .badge-wait { background: #333; color: #ffc107; }
+        .badge-done { background: #1b4d27; color: #2ecc71; }
+        .badge-reject { background: #4d1b1b; color: #e74c3c; }
+        .note-box { background: rgba(212, 175, 55, 0.1); padding: 10px; margin-top: 12px; border-radius: 10px; border: 1px dashed var(--gold); font-size: 0.85rem; color: #eee; }
     </style>
 </head>
 <body>
-
-    <header>
-        <h1>🎬 چیرۆکێن زێڕین</h1>
-        <p class="subtitle">فێربوونا ئینگلیزیێ ب رێکا چیرۆکێن ڕاستەقینە و ب هێز</p>
-        <div class="nav-buttons" id="nav-container">
-            <!-- Buttons dynamically added -->
-        </div>
-    </header>
-
+    <header><h1>RAYAN</h1></header>
     <main>
-        <div id="story-container">
-            <!-- Story content loads here -->
-        </div>
-
-        <div id="saved-section">
-            <h2 style="color: var(--accent); text-align: center; margin-bottom: 30px; font-size: 2rem;">⭐ ڕستەیێن من یێن پاراستی</h2>
-            <div id="saved-list">
-                <!-- Saved items load here -->
+        <div class="container">
+            <div id="tab-booking">
+                <div id="bookingFormUI">
+                    <div class="vip-card">
+                        <label>ناڤێ تە</label>
+                        <input type="text" id="custName" placeholder="ناڤێ تە">
+                        <label>ژمارا مۆبایلێ</label>
+                        <input type="tel" id="custPhone" placeholder="0750xxxxxxx">
+                        <div style="display: flex; gap: 10px;">
+                            <div style="flex:1"><label>ڕۆژ</label><select id="resDay"></select></div>
+                            <div style="flex:1"><label>دەمژمێر</label><select id="resTime"></select></div>
+                        </div>
+                        <label>جۆرێ کارى</label>
+                        <select id="resService">
+                            <option>پرچ ب تنێ</option><option>ڕیهـ ب تنێ</option>
+                            <option>پرچ و ڕیهـ</option><option>تەنیف و ماسک</option>
+                        </select>
+                        <button class="btn-gold" id="submitBtn" onclick="submitBooking()">تۆمارکرنا ژڤانی</button>
+                    </div>
+                </div>
+                <div id="statusUI"></div>
             </div>
+            <div id="tab-styles" style="display:none;"><div id="styles-list" style="display: grid; grid-template-columns: 1fr 1fr; gap:10px;"></div></div>
+            <div id="tab-shop" style="display:none;"><div id="tools-list" style="display: grid; grid-template-columns: 1fr 1fr; gap:10px;"></div></div>
         </div>
     </main>
+    <div class="fixed-footer">
+        <div class="dev-sig">
+            <a href="https://www.instagram.com/sakardusteki?igsh=YjI5bTZkM241dTJr&utm_source=qr" target="_blank">
+                <i class="fab fa-instagram" style="font-size: 1.1rem;"></i> DESIGNED BY: SAKARDUSTEKI <!-- ناوی ئەکاونت لابرا -->
+            </a>
+        </div>
+        <div class="nav-bar">
+            <div class="nav-item active" onclick="showTab('booking', this)"><i class="fas fa-calendar-alt"></i> ژڤان</div>
+            <div class="nav-item" onclick="showTab('styles', this)"><i class="fas fa-cut"></i> ستایل</div>
+            <div class="nav-item" onclick="showTab('shop', this)"><i class="fas fa-shopping-bag"></i> دوکان</div>
+        </div>
+    </div>
 
-    <div class="toast" id="toast">✅ ڕستە هاتە پاراستن!</div>
+<script>
+    const firebaseConfig = { 
+        apiKey: "AIzaSyDVj4rqZ3pMPrF_MVKlRjQwLLCHc56B6uM", 
+        databaseURL: "https://rayan-barber-default-rtdb.firebaseio.com/" 
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    <script>
-        // --- 1. زانیاریێن چیرۆکان (داتابەیس) ---
-        const stories =[
-            {
-                id: 1,
-                titleEn: "Apollo 13: Survival in Space",
-                titleKu: "ئەپۆلۆ ١٣: مانا ل ژیانێ د بۆشایییا ئاسمانیدا",
-                content:[
-                    { en: "In 1970, NASA launched the Apollo 13 mission to the moon.", ku: "د سالا ١٩٧٠ێ دا، ناسا مێشنا ئەپۆلۆ ١٣ بەرەڤ هەیڤێ بڕێکر." },
-                    { en: "Three astronauts were inside the spacecraft, expecting a normal journey.", ku: "سێ ئاسمانڤان دناڤ کەشتییا ئاسمانیدا بوون، چاڤەڕێی گەشتەکا ئاسایی بوون." },
-                    { en: "Suddenly, a loud explosion shook the entire ship.", ku: "ژ نشکێڤە، تەقینەکا مەزن هەمی کەشتی هەژاند." },
-                    { en: "An oxygen tank had exploded, destroying their life support system.", ku: "تەنکییەکا ئۆکسجینێ پەقیبوو، و سیستەمێ وان یێ ژیانێ تێکدابوو." },
-                    { en: "The commander took the radio and said the famous words:", ku: "فەرمانداری ڕادیۆ هەلگرت و ئەو پەیڤێن ناڤدار گۆتن:" },
-                    { en: "Houston, we have a problem.", ku: "هیوستن، ئەم تووشی ئاریشەیەکێ بووینە." },
-                    { en: "They were 200,000 miles away from Earth, freezing and running out of air.", ku: "ئەو ٢٠٠،٠٠٠ میل ژ ئەردی دویر بوون، دجەمدین و هەوایێ وان ب دوماهی دهات." },
-                    { en: "The engineers on Earth worked day and night to find a solution.", ku: "ئەندازیارێن ل سەر ئەردی شەڤ و رۆژ کارکرن داکو چارەسەرییەکێ ببینن." },
-                    { en: "Against all odds, the astronauts used the lunar module as a lifeboat.", ku: "تەڤی هەمی زەحمەتییان، ئاسمانڤانان بەشێ هەیڤێ وەکو کەشتییەکا رزگارکرنێ بکارئینا." },
-                    { en: "Four days later, they safely returned to Earth, becoming heroes.", ku: "چوار رۆژ پاشتر، ئەو ب سەلامەتی ڤەگەڕیان ئەردی، و بوونە قەهرەمان." }
-                ]
-            },
-            {
-                id: 2,
-                titleEn: "The Great Escape from Alcatraz",
-                titleKu: "ڕەڤینا مەزن ژ زیندانا ئەلکاتراز",
-                content:[
-                    { en: "Alcatraz was the most secure prison in the world.", ku: "ئەلکاتراز ئارامترین زیندان بوو ل جیهانێ." },
-                    { en: "It was built on an island surrounded by freezing water and strong currents.", ku: "ل سەر دورگەیەکێ هاتبوو ئاڤاکرن کو ب ئاڤا بەستێ و پێلێن بهێز هاتبوو دەوروبەرکرن." },
-                    { en: "Everyone believed that escaping from Alcatraz was impossible.", ku: "هەمی کەسان باوەر دکر کو ڕەڤین ژ ئەلکاترازێ تشتەکێ مەحالە." },
-                    { en: "However, in 1962, three clever prisoners made a secret plan.", ku: "لێ بەلێ، د سالا ١٩٦٢ێ دا، سێ زیندانییێن زیرەک پلانەکا نهێنی دانا." },
-                    { en: "For months, they used spoons and coins to dig holes in their cell walls.", ku: "بۆ چەندین هەیڤان، وان کەڤچک و پارەیێن ئاسن بکارئینان داکو کونان د دیوارێن ژوورا خۆ دا بکۆلن." },
-                    { en: "They made fake heads out of paper and soap to fool the guards.", ku: "وان سەرێن ساختە ژ کاغەز و سابینێ چێکرن داکو پاسەڤانان بخاپینن." },
-                    { en: "One dark night, they climbed through the holes and reached the roof.", ku: "شەڤەکا تاری، ئەو د کونان را سەرکەفتن و گەهشتنە سەربانی." },
-                    { en: "They built a raft using stolen raincoats and sailed into the dark ocean.", ku: "وان بەلەمەک ژ قاپووتێن بارانێ یێن دزی چێکر و بەرەڤ ئۆقیانووسا تاری چوون." },
-                    { en: "The next morning, the guards found the fake heads in the beds.", ku: "سپێدەهیا دی، پاسەڤانان سەرێن ساختە دناڤ نڤینان دا دیتن." },
-                    { en: "To this day, nobody knows if the men survived or drowned in the sea.", ku: "هەتا ئەڤرۆ، کەس نزانیت کا ئەو زەلام رزگار بوون یان د دەریایێ دا خەندقین." }
-                ]
-            },
-            {
-                id: 3,
-                titleEn: "Hachiko: The Loyal Dog",
-                titleKu: "هاچیکۆ: سەگێ وەفادار",
-                content:[
-                    { en: "Hachiko was a dog who lived in Japan in the 1920s.", ku: "هاچیکۆ سەگەک بوو کو ل سالێن ١٩٢٠ێ ل یابانێ دژیا." },
-                    { en: "Every day, he waited at the train station for his owner to return from work.", ku: "هەر رۆژ، ل وێستگەها شەمەندەفەرێ چاڤەڕێی خودانێ خۆ دکر کو ژ کاری ڤەگەڕیت." },
-                    { en: "One day, his owner suffered a sudden stroke and died at work.", ku: "رۆژەکێ، خودانێ وی تووشی جەلتەیەکا نشکێڤە بوو و ل سەر کاری گیانێ خۆ ژ دەست دا." },
-                    { en: "He never came back on the train that evening.", ku: "ئەو چ جاران د وێ ئێڤاریێ دا ب شەمەندەفەرێ نەڤەگەڕیا." },
-                    { en: "But Hachiko did not understand that his friend was gone forever.", ku: "لێ هاچیکۆی تێنەگەهشت کو هەڤاڵێ وی بۆ هەمیشە یێ چویی." },
-                    { en: "For the next nine years, the loyal dog returned to the station every single day.", ku: "بۆ نەهـ سالێن دی، ئەو سەگێ وەفادار هەر رۆژ دچووە وێستگەهێ." },
-                    { en: "He sat in the exact same spot, waiting for the train to arrive.", ku: "ئەو ڕێک ل هەمان جهـ دروونشت، و چاڤەڕێی هاتنا شەمەندەفەرێ دکر." },
-                    { en: "People who traveled daily started to notice him and brought him food.", ku: "ئەو کەسێن کو رۆژانە گەشت دکرن، پێ حەسیان و خارن بۆ دئینا." },
-                    { en: "Hachiko became a national symbol of loyalty and unconditional love.", ku: "هاچیکۆ بووە سیمبولەکێ نەتەوەیی یێ وەفاداری و حەژێکرنا بێ مەرج." },
-                    { en: "Today, a bronze statue of Hachiko stands exactly where he used to wait.", ku: "ئەڤرۆ، پەییکەرەکێ برۆنزی یێ هاچیکۆی ل هەمان وی جهی یێ هاتیە دانان کو لێ چاڤەڕێ دکر." }
-                ]
-            }
-        ];
+    function showTab(t, el) {
+        document.getElementById('tab-booking').style.display = (t==='booking')?'block':'none';
+        document.getElementById('tab-styles').style.display = (t==='styles')?'block':'none';
+        document.getElementById('tab-shop').style.display = (t==='shop')?'block':'none';
+        document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+        el.classList.add('active');
+    }
 
-        // --- 2. لۆجیکێ ئەپلیکەیشنی ---
-        const navContainer = document.getElementById('nav-container');
-        const storyContainer = document.getElementById('story-container');
-        const savedSection = document.getElementById('saved-section');
-        const savedList = document.getElementById('saved-list');
+    const days = ["شەمبی", "ئێکشەمبی", "دووشەمبی", "سێشەمبی", "چوارشەمبی", "پێنجشەمبی", "ئەینی"];
+    const daySelect = document.getElementById('resDay');
+    days.forEach(d => { let o = document.createElement('option'); o.text = d; daySelect.add(o); });
 
-        function initApp() {
-            navContainer.innerHTML = '';
-            // دوکمەیێن چیرۆکان
-            stories.forEach(story => {
-                const btn = document.createElement('button');
-                btn.className = 'nav-btn';
-                btn.innerText = story.titleKu;
-                btn.onclick = () => openStory(story.id);
-                btn.id = `btn-story-${story.id}`;
-                navContainer.appendChild(btn);
+    function loadTimes() {
+        const slots = [];
+        for(let h=10; h<=23; h++) { 
+            let p = h>=17 ? "شەڤ" : (h>=12 ? "نیڤڕۆ" : "سپێدە");
+            let d = h>12 ? h-12 : h;
+            ["00", "15", "30", "45"].forEach(m => slots.push(`${d}:${m} ${p}`));
+        }
+        
+        db.ref('bookings').on('value', snap => {
+            const timeEl = document.getElementById('resTime');
+            if(!timeEl) return;
+            const data = snap.val() || {};
+            const currentDay = document.getElementById('resDay').value;
+            timeEl.innerHTML = "";
+            slots.forEach(s => {
+                const isFull = Object.values(data).some(b => b.day === currentDay && b.time === s && b.status === 'Accepted');
+                let opt = document.createElement('option'); opt.value = s; opt.text = s;
+                if(isFull) { opt.disabled = true; opt.text += " (گیراوە)"; }
+                timeEl.add(opt);
             });
+        });
+    }
+    daySelect.onchange = loadTimes; loadTimes();
 
-            // دوکمەیا سەیڤکریان
-            const favBtn = document.createElement('button');
-            favBtn.className = 'nav-btn';
-            favBtn.innerHTML = '⭐ پاراستی';
-            favBtn.style.borderColor = 'var(--accent)';
-            favBtn.onclick = openSaved;
-            favBtn.id = 'btn-saved';
-            navContainer.appendChild(favBtn);
+    function updateUI() {
+        const myID = localStorage.getItem('myRayanID');
+        const formDiv = document.getElementById('bookingFormUI');
+        const statusDiv = document.getElementById('statusUI');
+        if (!myID) { formDiv.style.display = "block"; statusDiv.innerHTML = ""; return; }
 
-            openStory(1); // ڤەکرنا چیرۆکا ئێکێ وەکو دەستپێک
-        }
+        db.ref('bookings/' + myID).on('value', snap => {
+            if (snap.exists()) {
+                const b = snap.val();
+                formDiv.style.display = "none";
+                let txt = "تە بۆ ڕەیانی فرێکر، هیڤییە چاوەڕێ بە ⏳"; let cls = "badge-wait";
+                if(b.status === 'Accepted') { txt = "هاتە وەرگرتن ✅"; cls = "badge-done"; }
+                if(b.status === 'Rejected') { txt = "ڕەیانی ڕەتکر ❌"; cls = "badge-reject"; }
 
-        function openStory(id) {
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`btn-story-${id}`).classList.add('active');
+                statusDiv.innerHTML = `
+                    <div class="status-box">
+                        <button class="del-btn" onclick="deleteBooking('${myID}')"><i class="fas fa-trash"></i></button>
+                        <div style="padding-right: 50px;">
+                            <span class="badge ${cls}">${txt}</span><br>
+                            <b style="color:var(--gold); font-size:1.2rem;">${b.day} | ${b.time}</b><br>
+                            <small style="color:#888;">${b.service}</small>
+                            ${b.note ? `<div class="note-box"><b>تێبینیەک ژ ڕەیانی:</b><br>${b.note}</div>` : ''}
+                        </div>
+                    </div>`;
+            } else { localStorage.removeItem('myRayanID'); formDiv.style.display = "block"; }
+        });
+    }
 
-            savedSection.style.display = 'none';
-            storyContainer.style.display = 'block';
-            storyContainer.innerHTML = '';
-
-            const story = stories.find(s => s.id === id);
-
-            // سەردێڕێ چیرۆکێ
-            storyContainer.innerHTML = `
-                <div class="story-header">
-                    <h2 class="story-title-en">${story.titleEn}</h2>
-                    <h3 class="story-title-ku">${story.titleKu}</h3>
-                </div>
-            `;
-
-            // ڕستەیێن چیرۆکێ
-            story.content.forEach((line, index) => {
-                const safeEn = line.en.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                const safeKu = line.ku.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                const elementId = `text-${id}-${index}`;
-
-                const card = document.createElement('div');
-                card.className = 'sentence-card';
-                card.innerHTML = `
-                    <p class="text-en" id="${elementId}" onclick="playAudio('${safeEn}', '${elementId}')">${line.en}</p>
-                    <p class="text-ku">${line.ku}</p>
-                    <div class="actions">
-                        <button class="action-btn btn-play" onclick="playAudio('${safeEn}', '${elementId}')">🔊 گوهداری</button>
-                        <button class="action-btn btn-save" onclick="saveToFavorites('${safeEn}', '${safeKu}')">⭐ سەیڤ بکە</button>
-                    </div>
-                `;
-                storyContainer.appendChild(card);
-            });
-        }
-
-        // --- 3. سیستەمێ خاندنا دەنگی (Text to Speech) ---
-        function playAudio(text, elementId) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // راوەستاندنا دەنگێ بەرێ
-
-                const speech = new SpeechSynthesisUtterance(text);
-                speech.lang = 'en-US';
-                speech.rate = 0.85; // خاڤتر داکو باش تێبگەهیت
-                speech.pitch = 1;
-
-                const textElement = document.getElementById(elementId);
-                
-                // ئەنیمەیشنا ڕەنگێ زێڕین دەمێ دخوینیت
-                speech.onstart = () => { if(textElement) textElement.classList.add('reading'); };
-                speech.onend = () => { if(textElement) textElement.classList.remove('reading'); };
-                speech.onerror = () => { if(textElement) textElement.classList.remove('reading'); };
-
-                window.speechSynthesis.speak(speech);
-            } else {
-                alert("مخابن، براوزەرێ تە دەنگی پشگیری ناکەت.");
+    function submitBooking() {
+        const name = document.getElementById('custName').value.trim();
+        const phone = document.getElementById('custPhone').value.trim();
+        if(!name || !phone) return alert("ناڤ و مۆبایل بنڤیسە!");
+        
+        db.ref('bookings').once('value', snap => {
+            let foundKey = null;
+            snap.forEach(c => { if(c.val().phone === phone) foundKey = c.key; });
+            if(foundKey) { localStorage.setItem('myRayanID', foundKey); updateUI(); }
+            else {
+                const newRef = db.ref('bookings').push();
+                newRef.set({ name, phone, day: document.getElementById('resDay').value, time: document.getElementById('resTime').value, service: document.getElementById('resService').value, status: 'Pending' })
+                .then(() => { localStorage.setItem('myRayanID', newRef.key); updateUI(); });
             }
-        }
+        });
+    }
 
-        // --- 4. سیستەمێ پاراستنێ (Local Storage) ---
-        function saveToFavorites(enText, kuText) {
-            let savedItems = JSON.parse(localStorage.getItem('englishStoriesSaved')) ||[];
-            
-            // پشکنین کا بەری نوکە هاتیە سەیڤکرن
-            const isExist = savedItems.find(item => item.en === enText);
-            
-            if (!isExist) {
-                savedItems.push({ en: enText, ku: kuText, id: Date.now() });
-                localStorage.setItem('englishStoriesSaved', JSON.stringify(savedItems));
-                showToast("✅ ڕستە ب سەرکەفتیانە هاتە پاراستن!");
-            } else {
-                showToast("⚠️ ئەڤ ڕستەیە بەری نوکە یا هاتیە پاراستن.");
-            }
-        }
+    function deleteBooking(id) { 
+        if(confirm("ئەرێ تە دڤێت ژڤانێ خۆ رەش بکەی؟")) { // نووسینی سۆرانی گۆڕدرا بۆ بادینی
+            localStorage.removeItem('myRayanID'); 
+            db.ref('bookings/' + id).set(null).then(() => { location.reload(); }); 
+        } 
+    }
 
-        function openSaved() {
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-saved').classList.add('active');
+    updateUI();
 
-            storyContainer.style.display = 'none';
-            savedSection.style.display = 'block';
-            renderSavedList();
-        }
-
-        function renderSavedList() {
-            savedList.innerHTML = '';
-            let savedItems = JSON.parse(localStorage.getItem('englishStoriesSaved')) ||[];
-
-            if (savedItems.length === 0) {
-                savedList.innerHTML = '<p style="text-align:center; color:var(--text-ku); font-size:1.2rem;">چ ڕستەیێن پاراستی ل ڤێرە نینن. بچە چیرۆکان و ستێرکێ ⭐ دابگرە.</p>';
-                return;
-            }
-
-            // نیشاندانا ژ نویترین بۆ کەڤنترین
-            savedItems.sort((a, b) => b.id - a.id).forEach(item => {
-                const safeEn = item.en.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                const elementId = `saved-${item.id}`;
-
-                const card = document.createElement('div');
-                card.className = 'saved-item';
-                card.innerHTML = `
-                    <p class="text-en" id="${elementId}" onclick="playAudio('${safeEn}', '${elementId}')" style="margin-bottom:5px;">${item.en} 🔊</p>
-                    <p class="text-ku" style="border:none; padding:0; margin-bottom:10px;">${item.ku}</p>
-                    <button class="action-btn btn-delete" onclick="deleteSavedItem(${item.id})">❌ ژێبرن</button>
-                `;
-                savedList.appendChild(card);
-            });
-        }
-
-        function deleteSavedItem(id) {
-            let savedItems = JSON.parse(localStorage.getItem('englishStoriesSaved')) || [];
-            const updatedItems = savedItems.filter(item => item.id !== id);
-            localStorage.setItem('englishStoriesSaved', JSON.stringify(updatedItems));
-            renderSavedList(); // Refresh the list
-            showToast("🗑️ ڕستە هاتە ژێبرن.", true);
-        }
-
-        // --- 5. نۆتیفیکەیشن (ئاگادارکرن) ---
-        function showToast(message, isError = false) {
-            const toast = document.getElementById('toast');
-            toast.innerText = message;
-            toast.style.background = isError ? "var(--danger)" : "var(--accent)";
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        // --- RUN APP ---
-        document.addEventListener('DOMContentLoaded', initApp);
-    </script>
+    db.ref('styles').on('value', snap => {
+        const l = document.getElementById('styles-list'); if(!l) return; l.innerHTML = "";
+        snap.forEach(c => { l.innerHTML += `<div style="background:#111; border-radius:12px; overflow:hidden; border:1px solid #222; text-align:center;"><img src="${c.val().img}" style="width:100%; height:110px; object-fit:cover;"><p style="font-size:0.7rem; padding:5px;">${c.val().title}</p></div>`; });
+    });
+    db.ref('products').on('value', snap => {
+        const l = document.getElementById('tools-list'); if(!l) return; l.innerHTML = "";
+        snap.forEach(c => { l.innerHTML += `<div style="background:#111; border-radius:12px; overflow:hidden; border:1px solid #222; text-align:center;"><img src="${c.val().img}" style="width:100%; height:110px; object-fit:cover;"><p style="font-size:0.7rem; padding:5px;">${c.val().title}<br><span style="color:var(--gold)">${c.val().price}</span></p></div>`; });
+    });
+</script>
 </body>
 </html>
