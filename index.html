@@ -1,4 +1,15 @@
 <!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+<body>
+    
+</body>
+</html>
+<!DOCTYPE html>
 <html lang="ku" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -62,7 +73,7 @@
         <div class="dev-btn-trigger" onclick="document.getElementById('devModal').style.display='flex'">
             <i class="fas fa-info"></i>
         </div>
-        <h1>RAYAN</h1>
+        <h1>RAYAN Barber</h1>
     </header>
     <main>
         <div class="container">
@@ -193,7 +204,7 @@
     }
 
     function deleteBooking(id) { 
-        if(confirm("ئەرێ تو دڤێی ژڤانێ خۆ رەش بکەی؟")) { // نووسینی سۆرانی گۆڕدرا بۆ بادینی
+        if(confirm("ئەرێ تە دڤێت ژڤانێ خۆ رەش بکەی؟")) { // نووسینی سۆرانی گۆڕدرا بۆ بادینی
             localStorage.removeItem('myRayanID'); 
             db.ref('bookings/' + id).set(null).then(() => { location.reload(); }); 
         } 
